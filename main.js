@@ -127,8 +127,8 @@
     [subtitle, tagline].forEach(function (el) {
       if (!el) return;
       el.style.opacity    = '0';
-      el.style.transform  = 'translateY(16px)';
-      el.style.transition = 'opacity 0.9s ease, transform 0.9s ease';
+      el.style.transform  = 'translateY(20px)';
+      el.style.transition = 'opacity 1.1s ease, transform 1.1s ease';
     });
 
     await delay(700);
@@ -158,10 +158,10 @@
     await delay(200);
     await typeInto(uprisingWord, 'Uprising', 130, 0, 65);
 
-    // Subtitle then tagline drift up
-    await delay(500);
+    // Subtitle then tagline drift up — unhurried, let the title breathe first
+    await delay(900);
     if (subtitle) { subtitle.style.opacity = '1'; subtitle.style.transform = 'translateY(0)'; }
-    await delay(320);
+    await delay(600);
     if (tagline)  { tagline.style.opacity  = '1'; tagline.style.transform  = 'translateY(0)'; }
 
     // Cursor lingers, then fades
