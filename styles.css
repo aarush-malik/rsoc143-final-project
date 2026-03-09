@@ -522,6 +522,13 @@ footer p {
   }
 }
 
+  .video-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
 @media (max-width: 480px) {
   .stats-row {
     grid-template-columns: 1fr;
