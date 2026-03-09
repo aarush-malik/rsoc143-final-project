@@ -661,8 +661,15 @@ footer p {
 }
 
 .demands-list li.demand-key {
-  padding-left: 0.75rem;
-  border-left: 2px solid var(--color-accent);
+  background: rgba(201, 168, 76, 0.07);
+  border-radius: 3px;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+  margin: 0 -0.4rem;
+}
+
+.demands-list li.demand-key::marker {
+  color: var(--color-accent);
 }
 
 /* ===== Progress Bar ===== */
