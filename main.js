@@ -90,66 +90,85 @@
   var tagline  = document.querySelector('.hero .tagline');
 
   var delay  = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
-  var jitter = function (base, v) { return base + (Math.random() - 0.5) * v; };
+  // Humanised timing: random offset that stays positive so it never rushes
+  var jitter = function (base, lo, hi) { return base + lo + Math.random() * (hi - lo); };
 
-  // Rebuild h1 with animated structure; without JS the original static <s>Riot</s> remains
+  // Rebuild h1 — all spans start empty; without JS the original <s>Riot</s> markup remains
   h1.innerHTML =
-    'The <span class="accent">Attica</span> ' +
-    '<span class="riot-container">' +
+    '<span class="typed-prefix"></span>'  +
+    '<span class="typed-attica accent"></span>' +
+    '<span class="riot-container">'  +
       '<span class="riot-word"></span>' +
       '<span class="strike-line"></span>' +
     '</span>' +
     '<span class="uprising-word accent"></span>' +
     '<span class="type-cursor"></span>';
 
-  var riotWord    = h1.querySelector('.riot-word');
-  var strikeLine  = h1.querySelector('.strike-line');
-  var uprisingWord = h1.querySelector('.uprising-word');
-  var cursor      = h1.querySelector('.type-cursor');
+  var prefixSpan    = h1.querySelector('.typed-prefix');
+  var atticaSpan    = h1.querySelector('.typed-attica');
+  var riotContainer = h1.querySelector('.riot-container');
+  var riotWord      = h1.querySelector('.riot-word');
+  var strikeLine    = h1.querySelector('.strike-line');
+  var uprisingWord  = h1.querySelector('.uprising-word');
+  var cursor        = h1.querySelector('.type-cursor');
+
+  // Place cursor right after the prefix span to start
+  prefixSpan.after(cursor);
+
+  async function typeInto(el, text, baseMs, loJitter, hiJitter) {
+    for (var i = 0; i < text.length; i++) {
+      await delay(jitter(baseMs, loJitter, hiJitter));
+      el.textContent += text[i];
+    }
+  }
 
   async function run() {
-    // Hide subtitle & tagline so we can fade them in after
+    // Hide subtitle & tagline — will fade in after the sequence
     [subtitle, tagline].forEach(function (el) {
       if (!el) return;
       el.style.opacity    = '0';
-      el.style.transform  = 'translateY(14px)';
-      el.style.transition = 'opacity 0.75s ease, transform 0.75s ease';
+      el.style.transform  = 'translateY(16px)';
+      el.style.transition = 'opacity 0.9s ease, transform 0.9s ease';
     });
 
-    await delay(480);
+    await delay(700);
 
-    // Type "Riot"
-    for (var ch of 'Riot') {
-      await delay(jitter(95, 45));
-      riotWord.textContent += ch;
-    }
+    // "The " — steady, unhurried
+    await typeInto(prefixSpan, 'The\u00a0', 130, 0, 55);
 
-    await delay(880);
+    // Move cursor; type "Attica " — slightly faster, it's a proper name being recalled
+    atticaSpan.after(cursor);
+    await typeInto(atticaSpan, 'Attica\u00a0', 120, 0, 50);
 
-    // Draw strikethrough across "Riot"
+    // Move cursor; type "Riot" — deliberate, like writing something you're about to cross out
+    riotContainer.after(cursor);
+    await delay(jitter(0, 80, 160)); // tiny pre-pause, feels like a breath
+    await typeInto(riotWord, 'Riot', 145, 0, 70);
+
+    // Long pause — hesitation before the correction
+    await delay(1100);
+
+    // Draw strikethrough left-to-right
     strikeLine.classList.add('drawn');
-    await delay(520);
+    await delay(680); // let the line fully finish before moving on
 
-    // Move cursor to after the uprising span, then type " Uprising"
+    // Move cursor; type " Uprising"
     uprisingWord.after(cursor);
-    uprisingWord.textContent = '\u00a0'; // gap
+    uprisingWord.textContent = '\u00a0';
+    await delay(200);
+    await typeInto(uprisingWord, 'Uprising', 130, 0, 65);
 
-    for (var ch2 of 'Uprising') {
-      await delay(jitter(88, 42));
-      uprisingWord.textContent += ch2;
-    }
-
-    // Fade in subtitle, then tagline
-    await delay(360);
+    // Subtitle then tagline drift up
+    await delay(500);
     if (subtitle) { subtitle.style.opacity = '1'; subtitle.style.transform = 'translateY(0)'; }
-    await delay(230);
+    await delay(320);
     if (tagline)  { tagline.style.opacity  = '1'; tagline.style.transform  = 'translateY(0)'; }
 
-    // Cursor blinks a moment then disappears
-    await delay(1800);
-    cursor.style.transition = 'opacity 0.55s';
+    // Cursor lingers, then fades
+    await delay(2200);
+    cursor.style.transition = 'opacity 0.7s ease';
     cursor.style.opacity = '0';
-    setTimeout(function () { cursor.remove(); }, 650);
+    setTimeout(function () { if (cursor.parentNode) cursor.remove(); }, 800);
   }
 
   run();
