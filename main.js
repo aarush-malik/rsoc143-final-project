@@ -13,38 +13,52 @@
 
 /* ===== Stat Counters ===== */
 (function () {
-  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+  // Quintic ease-out: fast start, pronounced deceleration toward the end
+  function easeOut(t) { return 1 - Math.pow(1 - t, 5); }
 
-  function animateCounter(el) {
+  function animateCounter(el, delay) {
     const target = parseInt(el.dataset.target, 10);
     const prefix = el.dataset.prefix || '';
-    const duration = 1500;
-    const start = performance.now();
+    const duration = 2200;
 
-    function tick(now) {
-      const progress = Math.min((now - start) / duration, 1);
-      el.textContent = prefix + Math.round(easeOut(progress) * target).toLocaleString();
-      if (progress < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
+    setTimeout(function () {
+      const box = el.closest('.stat-box');
+      if (box) box.classList.add('stat-visible');
+
+      const start = performance.now();
+      function tick(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        el.textContent = prefix + Math.round(easeOut(progress) * target).toLocaleString();
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          // Brief flash when the number lands
+          if (box) box.classList.add('stat-done');
+        }
+      }
+      requestAnimationFrame(tick);
+    }, delay);
   }
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+  const observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
       if (entry.isIntersecting && !entry.target.dataset.counted) {
         entry.target.dataset.counted = '1';
-        animateCounter(entry.target);
+        const idx = parseInt(entry.target.dataset.index || 0, 10);
+        animateCounter(entry.target, idx * 150);
       }
     });
-  }, { threshold: 0.5 });
+  }, { threshold: 0.3 });
 
-  document.querySelectorAll('.stat-number').forEach(el => {
+  var idx = 0;
+  document.querySelectorAll('.stat-number').forEach(function (el) {
     const raw = el.textContent.trim();
     const prefix = raw.startsWith('~') ? '~' : '';
     const digits = raw.replace(/[^0-9]/g, '');
     if (digits) {
       el.dataset.target = digits;
       el.dataset.prefix = prefix;
+      el.dataset.index = idx++;
       el.textContent = prefix + '0';
       observer.observe(el);
     }
