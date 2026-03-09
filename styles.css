@@ -526,7 +526,7 @@ footer p {
 .page-media,
 .video-container {
   width: 100%;
-  max-width: 620px;
+  max-width: 480px;
   margin: 1.5rem auto 2rem;
 }
 
