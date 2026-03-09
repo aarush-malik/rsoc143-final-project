@@ -553,6 +553,36 @@ footer p {
     padding-left: 10px;
   }
 
+  .page-media {
+    margin: 2rem 0;
+  }
+  
+  .page-media img {
+    width: 100%;
+    border-radius: 6px;
+  }
+  
+  .page-media figcaption {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 0.5rem;
+  }
+    
+  .video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    margin-top: 1.5rem;
+  }
+  
+  .video-container iframe {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+  }
+
 @media (max-width: 480px) {
   .stats-row {
     grid-template-columns: 1fr;
