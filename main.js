@@ -65,6 +65,60 @@
   });
 }());
 
+/* ===== Accordion Animation ===== */
+(function () {
+  document.querySelectorAll('details.demands-accordion').forEach(function (details) {
+    var summary = details.querySelector('summary');
+    var content = details.querySelector('.demands-list');
+    if (!summary || !content) return;
+
+    // Measure and set explicit height so CSS transition has something to animate
+    summary.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      if (details.open) {
+        // Closing: animate from current height to 0
+        var start = content.scrollHeight;
+        content.style.height = start + 'px';
+        content.style.overflow = 'hidden';
+        requestAnimationFrame(function () {
+          content.style.transition = 'height 0.35s ease, opacity 0.3s ease';
+          content.style.height = '0';
+          content.style.opacity = '0';
+        });
+        content.addEventListener('transitionend', function done() {
+          details.removeAttribute('open');
+          content.style.height = '';
+          content.style.overflow = '';
+          content.style.transition = '';
+          content.style.opacity = '';
+          content.removeEventListener('transitionend', done);
+        });
+      } else {
+        // Opening: let browser set open, then animate from 0 to full height
+        details.setAttribute('open', '');
+        var target = content.scrollHeight;
+        content.style.height = '0';
+        content.style.overflow = 'hidden';
+        content.style.opacity = '0';
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            content.style.transition = 'height 0.38s ease, opacity 0.32s ease';
+            content.style.height = target + 'px';
+            content.style.opacity = '1';
+          });
+        });
+        content.addEventListener('transitionend', function done() {
+          content.style.height = '';
+          content.style.overflow = '';
+          content.style.transition = '';
+          content.removeEventListener('transitionend', done);
+        });
+      }
+    });
+  });
+}());
+
 /* ===== Card Shimmer ===== */
 (function () {
   document.querySelectorAll('.card').forEach(card => {
