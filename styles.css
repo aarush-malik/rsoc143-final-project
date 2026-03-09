@@ -422,6 +422,24 @@ tbody tr:hover {
   border-radius: 6px;
   padding: 1.5rem;
   text-align: center;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.stat-box.stat-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes stat-land {
+  0%   { color: var(--color-accent); }
+  35%  { color: #fff; }
+  100% { color: var(--color-accent); }
+}
+
+.stat-box.stat-done .stat-number {
+  animation: stat-land 0.45s ease forwards;
 }
 
 .stat-box .stat-number {
