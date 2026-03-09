@@ -806,3 +806,47 @@ footer p {
     left: calc(-3px - 2.25rem);
   }
 }
+
+/* ===== Hero Typewriter ===== */
+.riot-container {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.riot-word {
+  display: inline;
+}
+
+.strike-line {
+  position: absolute;
+  left: 0;
+  top: 52%;
+  height: 3px;
+  width: 0%;
+  background: var(--color-accent);
+  transform: translateY(-50%);
+  transition: width 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.strike-line.drawn {
+  width: 100%;
+}
+
+.type-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.82em;
+  background: var(--color-accent);
+  margin-left: 2px;
+  vertical-align: middle;
+  border-radius: 1px;
+  animation: cursorBlink 0.72s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
