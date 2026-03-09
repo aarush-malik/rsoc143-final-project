@@ -565,3 +565,244 @@ footer p {
     grid-template-columns: 1fr;
   }
 }
+
+/* ===== Progress Bar ===== */
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-accent-dim), var(--color-accent), #f0d878, var(--color-accent), var(--color-accent-dim));
+  background-size: 300% 100%;
+  animation: shimmerBar 2.5s linear infinite;
+  z-index: 9999;
+  pointer-events: none;
+  transition: width 0.08s linear;
+}
+
+@keyframes shimmerBar {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* ===== Hero — Animated Gradient + Film Grain ===== */
+.hero {
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    #0f0f0f 0%,
+    #1e140a 20%,
+    #0f0f0f 45%,
+    #160e10 70%,
+    #0f0f0f 100%
+  );
+  background-size: 400% 400%;
+  animation: heroShift 16s ease infinite;
+}
+
+@keyframes heroShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Film grain overlay */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.055;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== Card Shimmer ===== */
+.card {
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(201, 168, 76, 0.18) 0%,
+    transparent 62%
+  );
+  opacity: 0;
+  transition: opacity 0.35s;
+  pointer-events: none;
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+.card:hover {
+  border-color: rgba(201, 168, 76, 0.5);
+  box-shadow: 0 8px 32px rgba(201, 168, 76, 0.09), 0 2px 8px rgba(0, 0, 0, 0.35);
+  transform: translateY(-4px);
+}
+
+/* ===== Timeline (Redesigned) ===== */
+.timeline {
+  position: relative;
+  margin: 2.5rem 0;
+  padding-left: 2.75rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--color-accent-dim) 6%,
+    var(--color-accent-dim) 94%,
+    transparent 100%
+  );
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid transparent;
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.3s, box-shadow 0.3s;
+}
+
+.timeline-item.tl-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.timeline-item:hover {
+  border-left-color: var(--color-accent-dim);
+  box-shadow: 0 4px 28px rgba(201, 168, 76, 0.11);
+}
+
+/* Dot — centered on the timeline line (line center = 11px from .timeline left,
+   item left edge = 2.75rem from .timeline left, dot is 16px wide) */
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: calc(3px - 2.75rem);   /* (11px - 8px) - 2.75rem */
+  top: 1.5rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 3px solid var(--color-bg);
+  box-shadow: 0 0 0 2px var(--color-accent-dim), 0 0 14px rgba(201, 168, 76, 0.55);
+  z-index: 1;
+}
+
+/* Pulse ring */
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  left: calc(-3px - 2.75rem);  /* dot left - 6px */
+  top: calc(1.5rem - 6px);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(201, 168, 76, 0.12);
+  animation: tlPulse 2.8s ease-out infinite;
+  z-index: 0;
+}
+
+@keyframes tlPulse {
+  0%   { transform: scale(1); opacity: 0.75; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+.timeline-item .date {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Decorative line after the date */
+.timeline-item .date::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--color-border), transparent);
+}
+
+.timeline-item h3 {
+  margin-top: 0;
+  font-size: 1.15rem;
+}
+
+.timeline-item p {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0;
+}
+
+/* Critical event (e.g. September 13 — The Assault) */
+.timeline-item--critical::before {
+  background: #c94c4c;
+  box-shadow: 0 0 0 2px rgba(180, 60, 60, 0.4), 0 0 14px rgba(180, 60, 60, 0.55);
+}
+
+.timeline-item--critical::after {
+  background: rgba(180, 60, 60, 0.1);
+  animation-name: tlPulseCritical;
+}
+
+@keyframes tlPulseCritical {
+  0%   { transform: scale(1); opacity: 0.75; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+.timeline-item--critical {
+  border-left-color: rgba(180, 60, 60, 0.25) !important;
+}
+
+.timeline-item--critical:hover {
+  border-left-color: rgba(180, 60, 60, 0.55) !important;
+  box-shadow: 0 4px 28px rgba(180, 60, 60, 0.13);
+}
+
+/* Mobile timeline */
+@media (max-width: 768px) {
+  .timeline {
+    padding-left: 2.25rem;
+  }
+
+  .timeline-item::before {
+    left: calc(3px - 2.25rem);
+  }
+
+  .timeline-item::after {
+    left: calc(-3px - 2.25rem);
+  }
+}
